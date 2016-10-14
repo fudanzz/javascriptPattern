@@ -1,36 +1,49 @@
 function onReady() {
-    console.log('hello chapter1');
 
-    createClock();
+    var clock = new Clock('clock', 480);
 
-
+    var clock2 = new Clock('clock2', 0, 'GMT');
 }
 
-function createClock() {
+Date.prototype.updateSeconds = function () {
+    this.setSeconds(this.getSeconds() + 1);
+}
 
-    var c = new Object();
+function Clock(id, offset, lable) {
 
-    var self = c;
+    offset = offset || 0;
 
-    c.updateClock = function () {
+    var d = new Date();
 
-        var date = new Date();
-        var clock = document.getElementById('clock');
-        clock.innerHTML = self.formateDigits(date.getHours()) + ":" + self.formateDigits(date.getMinutes()) + ":" + self.formateDigits(date.getSeconds());
-    }
+    var offset = (offset + d.getTimezoneOffset()) * 60 * 1000;
+
+    this.d = new Date(offset + d.getTime());
+
+    this.lable = lable || '';
+
+    this.id = id;
+
+    this.updateClock();
+
+    var that = this;
+
+    setInterval(function () {
+        that.updateClock();
+    }, 1000);
+}
 
 
-    c.formateDigits = function (val) {
-        return val > 10 ? val : "0" + val;
-    }
+
+Clock.prototype.updateClock = function () {
+    var date = this.d;
+    date.updateSeconds();
+    var clock = document.getElementById(this.id);
+    clock.innerHTML = this.formateDigits(date.getHours()) + ":" + this.formateDigits(date.getMinutes()) + ":" + this.formateDigits(date.getSeconds()) + " " + this.lable;
+}
 
 
-    setInterval(c.updateClock, 1000);
-
-    c.updateClock();
-
-    return c;
-
+Clock.prototype.formateDigits = function (val) {
+    return val > 10 ? val : "0" + val;
 }
 
 
