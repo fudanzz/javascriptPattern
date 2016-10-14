@@ -1,12 +1,37 @@
 function onReady() {
     console.log('hello chapter1');
 
-    var date = new Date();
+    createClock();
 
-    console.log(date.getHours());
-    console.log(date.getHours());
-    console.log(date.getHours());
 
 }
+
+function createClock() {
+
+    var c = new Object();
+
+    var self = c;
+
+    c.updateClock = function () {
+
+        var date = new Date();
+        var clock = document.getElementById('clock');
+        clock.innerHTML = self.formateDigits(date.getHours()) + ":" + self.formateDigits(date.getMinutes()) + ":" + self.formateDigits(date.getSeconds());
+    }
+
+
+    c.formateDigits = function (val) {
+        return val > 10 ? val : "0" + val;
+    }
+
+
+    setInterval(c.updateClock, 1000);
+
+    c.updateClock();
+
+    return c;
+
+}
+
 
 window.onload = onReady;
